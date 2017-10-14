@@ -7,7 +7,9 @@ namespace ElasticSharp.ConsoleTests
     {
         static void Main(string[] args)
         {
-            ulong u = 11170618849693521544;
+            
+            //retrieves secret phrase from text file
+            var secret = Account.Secret;
 
             var transactionStr = "0010813db506a0059fa3a0f6bd401b40c8e9917da4cf1900a4087e8a3cba6001f6e461a32a9b3a54f870429596621cc8001417c668000000809698000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007a6cf5ab4fd016bf";
 
@@ -37,12 +39,23 @@ namespace ElasticSharp.ConsoleTests
             Console.WriteLine(signedTransaction.ToJson());
 
 
-            var signature1 = Crypto.Sign(tranBytes, ""); // secret phrase
+            var signature1 = Crypto.Sign(tranBytes, secret);
 
             Console.WriteLine(tranBytes.Length);
 
             Console.WriteLine(BitConverter.ToString(signedTransaction.Signature.FromHex()));
             Console.WriteLine(BitConverter.ToString(signature1));
+        }
+
+        private static Account Account
+        {
+            get
+            {
+                var acc = System.IO.File.ReadAllText(@"c:\work\elastic\testaccount.txt");
+
+                return Newtonsoft.Json.JsonConvert.DeserializeObject<Account>(acc);
+            }
+
         }
     }
 }

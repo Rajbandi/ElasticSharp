@@ -65,7 +65,7 @@ namespace ElasticSharp.Core
         private int height;
         public void FromJson(string json)
         {
-            throw new NotImplementedException();
+            var transaction = JsonConvert.DeserializeObject<Transaction>(json);
         }
 
         public string ToJson()
