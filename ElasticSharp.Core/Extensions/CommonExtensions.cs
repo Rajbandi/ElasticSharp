@@ -1,18 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ElasticSharp.Core
 {
+    /// <summary>
+    /// Common extension methods 
+    /// </summary>
     public static class CommonExtensions
     {
+        /// <summary>
+        /// Converts given byte array to hex string
+        /// </summary>
+        /// <param name="bytes">Byte array to convert</param>
+        /// <returns></returns>
         public static string ToHex(this byte[] bytes)
         {
             return BitConverter.ToString(bytes).Replace("-", "");
         }
 
+        /// <summary>
+        /// Converts given string to byte array
+        /// </summary>
+        /// <param name="str">String to convert</param>
+        /// <returns></returns>
         public static byte[] FromHex(this string str)
         {
             return Enumerable.Range(0, str.Length)
@@ -20,6 +30,12 @@ namespace ElasticSharp.Core
                     .Select(x => Convert.ToByte(str.Substring(x, 2), 16))
                     .ToArray();
         }
+
+        /// <summary>
+        /// Returns bytes equivalent of a given long value
+        /// </summary>
+        /// <param name="val">Long value</param>
+        /// <returns></returns>
         public static byte[] GetBytes(this long val)
         {
             byte[] bytes = BitConverter.GetBytes(val);
@@ -27,6 +43,12 @@ namespace ElasticSharp.Core
                 Array.Reverse(bytes);
             return bytes;
         }
+
+        /// <summary>
+        /// Converts a given byte array to long value
+        /// </summary>
+        /// <param name="val">Byte array to convert</param>
+        /// <returns></returns>
         public static long GetLongBytes(this byte[] val)
         {
             long longValue = BitConverter.ToInt64(val, 0);
@@ -40,6 +62,11 @@ namespace ElasticSharp.Core
             return bytes;
         }
 
+        /// <summary>
+        /// Converts a byte array to integer
+        /// </summary>
+        /// <param name="val">Byte array to convert</param>
+        /// <returns></returns>
         public static int GetBytes(this byte[] val)
         {
             int intValue = BitConverter.ToInt32(val, 0);

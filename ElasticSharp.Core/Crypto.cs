@@ -1,13 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Numerics;
-using System.Security.Cryptography;
 using System.Linq;
 using Org.BouncyCastle.Crypto.Digests;
 
 namespace ElasticSharp.Core
 {
+    /// <summary>
+    /// This class contains important crypto related methods.
+    /// </summary>
     public class Crypto
     {
         public class KeyPair
@@ -23,6 +24,11 @@ namespace ElasticSharp.Core
         //}
         public static readonly BigInteger Two64 = BigInteger.Parse("18446744073709551616");
 
+        /// <summary>
+        /// Get an id from a given hash string
+        /// </summary>
+        /// <param name="hashStr">hash string</param>
+        /// <returns></returns>
         public static ulong GetId(string hashStr)
         {
             var hash = hashStr.FromHex();
@@ -42,6 +48,11 @@ namespace ElasticSharp.Core
             return (ulong)strId;
         }
 
+        /// <summary>
+        /// Get an id from a given byte array
+        /// </summary>
+        /// <param name="hash">byte array</param>
+        /// <returns></returns>
         public static ulong GetId(byte[] hash)
         {
            
@@ -61,6 +72,11 @@ namespace ElasticSharp.Core
             return (ulong)strId;
         }
 
+        /// <summary>
+        /// Get keys from a given secret phrase
+        /// </summary>
+        /// <param name="secretPhrase">Secret phrase</param>
+        /// <returns></returns>
         public static KeyPair GetKeys(string secretPhrase)
         {
            
@@ -76,6 +92,11 @@ namespace ElasticSharp.Core
             };
         }
 
+        /// <summary>
+        /// Get a public key from a secret phrase
+        /// </summary>
+        /// <param name="secretPhrase">Secret phrase</param>
+        /// <returns></returns>
         public static byte[] GetPublicKey (string secretPhrase)
         {
            
@@ -86,6 +107,12 @@ namespace ElasticSharp.Core
             Algos.Curve25519.keygen(publicKey, privateKey, hash);
             return publicKey;
         }
+
+        /// <summary>
+        /// Get a public key from a given byte array
+        /// </summary>
+        /// <param name="bytes">byte array</param>
+        /// <returns></returns>
         public static byte[] GetPublicKey(byte[] bytes)
         {
             var privateKey = new byte[32];
@@ -94,6 +121,11 @@ namespace ElasticSharp.Core
             return publicKey;
         }
 
+        /// <summary>
+        /// Get a private key from a given secret phrase.
+        /// </summary>
+        /// <param name="secretPhrase">Secret phrase</param>
+        /// <returns></returns>
         public static byte[] GetPrivateKey(string secretPhrase)
         {
             var secretBytes = Encoding.UTF8.GetBytes(secretPhrase);
@@ -104,6 +136,11 @@ namespace ElasticSharp.Core
             return privateKey;
         }
 
+        /// <summary>
+        /// Get a private key from a given byte array
+        /// </summary>
+        /// <param name="bytes">Byte array</param>
+        /// <returns></returns>
         public static byte[] GetPrivateKey(byte[] bytes)
         {
             var hash = GetSha256(bytes);
@@ -114,16 +151,32 @@ namespace ElasticSharp.Core
             return privateKey;
         }
 
-
+        /// <summary>
+        /// Converts bytes to hex string
+        /// </summary>
+        /// <param name="buffer">Bytes to convert</param>
+        /// <returns></returns>
         public static string ToHex(byte[] buffer)
         {
             return BitConverter.ToString(buffer);
         }
        
+        /// <summary>
+        /// Converts a given byte array to a base 64 string
+        /// </summary>
+        /// <param name="buffer">Byte array</param>
+        /// <returns></returns>
         public static string ToBase64(byte[] buffer)
         {
             return Convert.ToBase64String(buffer);
         }
+
+        /// <summary>
+        /// Signs a message with a secret phrase
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="secretPhrase"></param>
+        /// <returns></returns>
         public static byte[] Sign(byte[] message, string secretPhrase)
         {
 
@@ -150,6 +203,11 @@ namespace ElasticSharp.Core
             return signature;
         }
 
+        /// <summary>
+        /// Gets sha 256 hash from a given string 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public static byte[] GetSha256(string data)
         {
             return GetSha256(Encoding.UTF8.GetBytes(data));
@@ -162,6 +220,11 @@ namespace ElasticSharp.Core
         //    return hash;
 
         //}
+        /// <summary>
+        /// Gets sha 256 bytes from a given byte arrays
+        /// </summary>
+        /// <param name="messages">byte arrays</param>
+        /// <returns></returns>
         public static byte[] GetSha256(params byte[][] messages)
         {
             var digest = new Sha256Digest();
@@ -177,5 +240,14 @@ namespace ElasticSharp.Core
             return bytes;
         }
 
+        /// <summary>
+        /// Converts a empty byte array to hex string
+        /// </summary>
+        /// <param name="length">Byte lenth</param>
+        /// <returns></returns>
+        public static string ToHexEmpty(int length)
+        {
+            return new byte[length].ToHex();
+        }
     }
 }
