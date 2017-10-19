@@ -2,6 +2,9 @@
 
 namespace ElasticSharp.Core
 {
+    /// <summary>
+    /// All Elastic constants
+    /// </summary>
     public static class Constants
     {
         public static readonly string AddressPrefix = "XEL-";
@@ -43,6 +46,9 @@ namespace ElasticSharp.Core
         public static readonly int MaxAssetTransferCommentLength = 1000;
         public static readonly int MaxDividendPaymentRollback = 1441;
 
+        public static int MaxArbitraryMessageLength = 160;
+        public static int MaxEncryptedMessageLength = 160 + 16;
+
         public static readonly int MaxPollNameLength = 100;
         public static readonly int MaxPollDescriptionLength = 1000;
         public static readonly int MaxPollOptionLength = 100;
@@ -64,39 +70,39 @@ namespace ElasticSharp.Core
         public static readonly long MinHubEffectiveBalance = 100000;
 
         public static readonly int MinCurrencyNameLength = 3;
-        public static readonly int MAX_CURRENCY_NAME_LENGTH = 10;
-        public static readonly int MIN_CURRENCY_CODE_LENGTH = 3;
-        public static readonly int MAX_CURRENCY_CODE_LENGTH = 5;
-        public static readonly int MAX_CURRENCY_DESCRIPTION_LENGTH = 1000;
-        public static readonly long MAX_CURRENCY_TOTAL_SUPPLY = 1000000000L * 100000000L;
-        public static readonly int MAX_MINTING_RATIO = 10000; // per mint units not more than 0.01% of total supply
-        public static readonly byte MIN_NUMBER_OF_SHUFFLING_PARTICIPANTS = 3;
-        public static readonly byte MAX_NUMBER_OF_SHUFFLING_PARTICIPANTS = 30; // max possible at current block payload limit is 51
-        public static readonly short MAX_SHUFFLING_REGISTRATION_PERIOD = (short)1440 * 7;
+        public static readonly int MaxCurrencyNameLength = 10;
+        public static readonly int MinCurrencyCodeLength = 3;
+        public static readonly int MaxCurrencyCodeLength = 5;
+        public static readonly int MaxCurrencyDescriptionLength = 1000;
+        public static readonly long MaxCurrencyTotalSupply = 1000000000L * 100000000L;
+        public static readonly int MaxMintingRatio = 10000; // per mint units not more than 0.01% of total supply
+        public static readonly byte MinNumberOfShufflingParticipants = 3;
+        public static readonly byte MaxNumberOfShufflingParticipants = 30; // max possible at current block payload limit is 51
+        public static readonly short MaxShufflingRegistrationPeriod = (short)1440 * 7;
         
 
-        public static readonly int MAX_TAGGED_DATA_NAME_LENGTH = 100;
-        public static readonly int MAX_TAGGED_DATA_DESCRIPTION_LENGTH = 1000;
-        public static readonly int MAX_TAGGED_DATA_TAGS_LENGTH = 100;
-        public static readonly int MAX_TAGGED_DATA_TYPE_LENGTH = 100;
-        public static readonly int MAX_TAGGED_DATA_CHANNEL_LENGTH = 100;
-        public static readonly int MAX_TAGGED_DATA_FILENAME_LENGTH = 100;
-        public static readonly int MAX_TAGGED_DATA_DATA_LENGTH = 42 * 1024;
+        public static readonly int MaxTaggedDataNameLength = 100;
+        public static readonly int MaxTaggedDataDescriptionLength = 1000;
+        public static readonly int MaxTaggedDataTagsLength = 100;
+        public static readonly int MaxTaggedDataTypeLength = 100;
+        public static readonly int MaxTaggedDataChannelLength = 100;
+        public static readonly int MaxTaggedDataFilenameLength = 100;
+        public static readonly int MaxTaggedDataDataLength = 42 * 1024;
 
-        public static readonly int ALIAS_SYSTEM_BLOCK = -1;
-        public static readonly int TRANSPARENT_FORGING_BLOCK = -1;
-        public static readonly int ARBITRARY_MESSAGES_BLOCK = -1;
-        public static readonly int TRANSPARENT_FORGING_BLOCK_2 = -1;
-        public static readonly int TRANSPARENT_FORGING_BLOCK_3 = -1;
-        public static readonly int TRANSPARENT_FORGING_BLOCK_4 = -1;
-        public static readonly int TRANSPARENT_FORGING_BLOCK_5 = -1;
-        public static readonly int TRANSPARENT_FORGING_BLOCK_6 = IsTestNet ? -1 : -1;
-        public static readonly int TRANSPARENT_FORGING_BLOCK_7 = Int32.MaxValue;
-        public static readonly int TRANSPARENT_FORGING_BLOCK_8 = IsTestNet ? -1 : -1;
-        public static readonly int NQT_BLOCK = IsTestNet ? -1 : -1;
-        public static readonly int FRACTIONAL_BLOCK = IsTestNet ? NQT_BLOCK : -1;
-        public static readonly int ASSET_EXCHANGE_BLOCK = IsTestNet ? NQT_BLOCK : -1;
-        public static readonly int ReferencedTransactionFullHashBlock = IsTestNet ? NQT_BLOCK : -1;
+        public static readonly int AliasSystemBlock = -1;
+        public static readonly int TransparentForgingBlock = -1;
+        public static readonly int ArbitraryMessagesBlock = -1;
+        public static readonly int TransparentForgingBlock2 = -1;
+        public static readonly int TransparentForgingBlock3 = -1;
+        public static readonly int TransparentForgingBlock4 = -1;
+        public static readonly int TransparentForgingBlock5 = -1;
+        public static readonly int TransparentForgingBlock6 = IsTestNet ? -1 : -1;
+        public static readonly int TransparentForgingBlock7 = Int32.MaxValue;
+        public static readonly int TransparentForgingBlock8 = IsTestNet ? -1 : -1;
+        public static readonly int NqtBlock = IsTestNet ? -1 : -1;
+        public static readonly int FractionalBlock = IsTestNet ? NqtBlock : -1;
+        public static readonly int AssetExchangeBlock = IsTestNet ? NqtBlock : -1;
+        public static readonly int ReferencedTransactionFullHashBlock = IsTestNet ? NqtBlock : -1;
         public static readonly int ReferencedTransactionFullHashBlockTimestamp = -1;
         public static readonly int MaxReferencedTransactionTimespan = 60 * 1440 * 60;
         public static readonly int DigitalGoodsStoreBlock = -1;

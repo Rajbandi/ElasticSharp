@@ -1,11 +1,6 @@
 ﻿
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ElasticSharp.Core.Transactions;
+using ElasticSharp.Core;
 
 
 namespace ElasticSharp.Core.Tests
@@ -41,7 +36,7 @@ namespace ElasticSharp.Core.Tests
         {
             var unsignedTransaction =
                 "0010813db506a0059fa3a0f6bd401b40c8e9917da4cf1900a4087e8a3cba6001f6e461a32a9b3a54f870429596621cc8001417c668000000809698000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007a6cf5ab4fd016bf";
-            var transaction = new OrdinaryPayment
+            var transaction = new Transaction
             {
                 Version = 1,
                 TimeStamp = 112541057,
@@ -69,7 +64,7 @@ namespace ElasticSharp.Core.Tests
                 Id = Account.GetId(address),
             };
 
-            var transaction2 = Transaction.Parse(unsignedTransaction);
+            var transaction2 = Transaction.FromBytes(unsignedTransaction);
 
             Assert.AreEqual(transaction.ToJson(), transaction2.ToJson());
 
@@ -88,7 +83,7 @@ namespace ElasticSharp.Core.Tests
         {
             var signedTransaction =
                 "0010813db506a0059fa3a0f6bd401b40c8e9917da4cf1900a4087e8a3cba6001f6e461a32a9b3a54f870429596621cc8001417c66800000080969800000000000000000000000000000000000000000000000000000000000000000000000000894e4708aec679a351cdafff6f15a0f9f0501d215bcc7e152e74650d130af70002a2c278b0b31d70f9695c6d15181aea96a0394c846096b217d61ba5d176d18700000000000000007a6cf5ab4fd016bf";
-            var transaction = new OrdinaryPayment
+            var transaction = new Transaction
             {
                 Version = 1,
                 TimeStamp = 112541057,
@@ -116,7 +111,7 @@ namespace ElasticSharp.Core.Tests
                 Id = Account.GetId(address),
             };
 
-            var transaction2 = Transaction.Parse(signedTransaction);
+            var transaction2 = Transaction.FromBytes(signedTransaction);
 
             //  Assert.AreEqual(transaction.ToJson(), transaction2.ToJson());
 

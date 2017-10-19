@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.Serialization;
-
+using ElasticSharp.Core.Appendix;
 using Newtonsoft.Json;
 
-namespace ElasticSharp.Core.Transactions
+namespace ElasticSharp.Core
 {
     public enum TransactionType 
     {
@@ -27,10 +27,8 @@ namespace ElasticSharp.Core.Transactions
 
 
     [DataContract]
-    public abstract class Transaction : IJsonObject
+    public class Transaction : IJsonObject
     {
-        public abstract string Name { get; }
-
         [DataMember(Name = "type")]
         public byte Type { get; set; }
 
@@ -81,19 +79,28 @@ namespace ElasticSharp.Core.Transactions
         [DataMember(Name = "senderPublicKey")]
         public string SenderPublicKey { get; set; }
 
-        public TransactionType TransactionType => GetTransactionType(Type, SubType);
+        public IAppendix Message { get; set; }
+        public IAppendix EncryptedMessage { get; set; }
 
-        private int height;
+        public IAppendix EncryptToSelfMessage { get; set; }
+        public IAppendix PublicKeyAnouncement { get; set; }
 
+        public IAppendix Phasing { get; set; }
+
+        public IAppendix PrunablePlainMessage { get; set; }
+
+        public IAppendix PrunableEncryptedMessage { get; set; }
+
+        private int height = Int32.MaxValue;
        
         /// <summary>
         /// Default constructor. 
         /// </summary>
         /// <param name="type">Transaction type</param>
-        protected Transaction(TransactionType type)
+        public Transaction()
         {
-            Type = GetTransactionType(type);
-            SubType = GetTransactionSubType(type);
+            TimeStamp = Int32.MaxValue;
+            
         }
       
         public void FromJson(string json)
@@ -111,23 +118,23 @@ namespace ElasticSharp.Core.Transactions
         }
 
         /// <summary>
-        /// Parse a transaction from a given hex string
+        /// FromBytes a transaction from a given hex string
         /// </summary>
         /// <param name="str">Hex string</param>
         /// <returns>Transaction data</returns>
-        public static Transaction Parse(string str)
+        public static Transaction FromBytes(string str)
         {
             var bytes = str.FromHex();
-            return Parse(bytes);
+            return FromBytes(bytes);
 
         }
 
         /// <summary>
-        /// Parse a transaction from bytes
+        /// FromBytes a transaction from bytes
         /// </summary>
         /// <param name="bytes">Byte array to parse</param>
         /// <returns>Transaction data. It return nulls if byte array not in recgonizable format</returns>
-        public static Transaction Parse(byte[] bytes)
+        public static Transaction FromBytes(byte[] bytes)
         {
 
             Transaction transaction = null;
@@ -137,14 +144,18 @@ namespace ElasticSharp.Core.Transactions
                 {
                     using (var io = new BinaryReader(ms))
                     {
+                        transaction = new Transaction();
 
                         var type = io.ReadByte();
                         var subType = io.ReadByte();
 
                         var sub = (byte)(subType & 0x0F);
-                        transaction = GetTransaction(GetTransactionType(type, sub));
+
+                        transaction.Type = type;
+                        transaction.SubType = sub;
 
                         var version = (byte) ((subType & 0xF0) >> 4);
+
                         transaction.Version = version;
                         //transaction.SubType = (byte) (subType & 0x0F);
                         transaction.TimeStamp = io.ReadInt32();
@@ -162,6 +173,9 @@ namespace ElasticSharp.Core.Transactions
                             transaction.BlockHeight = io.ReadInt32();
                             transaction.BlockId = io.ReadUInt64();
                         }
+
+                      
+
                         var key = senderPublicKey.ToHex();
                         if (senderPublicKey != null)
                             transaction.Sender = Account.GetAccount(senderPublicKey);
@@ -237,6 +251,7 @@ namespace ElasticSharp.Core.Transactions
                             io.Write(transaction.BlockHeight);
                             io.Write(transaction.BlockId);
                         }
+                       
                     }
                     return ms.ToArray();
                 }
@@ -426,36 +441,6 @@ namespace ElasticSharp.Core.Transactions
                 return transactionSubType;
         }
 
-        /// <summary>
-        /// Creates a new transaction for a given transaction type
-        /// </summary>
-        /// <param name="type">Transaction type to create</param>
-        /// <returns></returns>
-        public static Transaction GetTransaction(TransactionType type)
-        {
-            Transaction transaction = null;
-            switch (type)
-            {
-                case TransactionType.PaymentOrdinary:
-                    transaction = new OrdinaryPayment();
-                    break;
-                case TransactionType.PaymentRedeem:
-                    break;
-                case TransactionType.MessageArbitrary:
-                    break;
-                case TransactionType.MessagePollCreation:
-                    break;
-                case TransactionType.MessageVoteCasting:
-                    break;
-                case TransactionType.MessagePhasingVoteCasting:
-                    break;
-                case TransactionType.MessageAccountInfo:
-                    break;
-                case TransactionType.MessageHubAnouncement:
-                    break;
-            }
-            return transaction;
-        }
 
         /// <summary>
         /// Get transaction flags
@@ -478,34 +463,9 @@ namespace ElasticSharp.Core.Transactions
 
         public bool UseNQT()
         {
-            return this.height > Constants.NQT_BLOCK;//|| Nxt.getBlockchain().getHeight() >= Constants.NQT_BLOCK;
+            return this.height > Constants.NqtBlock;//|| Nxt.getBlockchain().getHeight() >= Constants.NQT_BLOCK;
         }
 
-        /// <summary>
-        /// Checks whether transaction is entitled for zero fee or not
-        /// </summary>
-        /// <returns></returns>
-        public bool IsZeroFee()
-        {
-            return IsZeroFee(this);
-        }
 
-        /// <summary>
-        /// Checks whether a given transaction is entitled for zero fee or not
-        /// </summary>
-        /// <param name="t"></param>
-        /// <returns></returns>
-        public static bool IsZeroFee(Transaction t)
-        {
-            return t.TransactionType == TransactionType.PaymentRedeem;
-        }
-
-        //public abstract object ParseAttachment(byte[] data, byte transactionVersion);
-
-        //public abstract object ParseAttachment(string json);
-
-        //public abstract bool ValidateAttachment();
-
-        
     }
 }
