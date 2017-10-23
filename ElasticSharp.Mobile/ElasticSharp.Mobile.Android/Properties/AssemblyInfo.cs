@@ -1,4 +1,13 @@
-﻿using System.Reflection;
+﻿/**********************************************
+
+ Copyright (c) 2017 Raj Bandi
+ Licensed under Apache License 2.0. See LICENSE file in the project root for full license information.
+ 
+ Name: AssemblyInfo.cs 
+ Project: ElasticSharp (https://www.github.com/rajbandi/elasticsharp)
+ 
+***********************************************/
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using Android.App;
 

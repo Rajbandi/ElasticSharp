@@ -1,0 +1,21 @@
+﻿extensions: designer.cs generated.cs
+extensions: .cs .cpp .h
+/**********************************************
+
+ Copyright (c) 2017 Raj Bandi
+ Licensed under Apache License 2.0. See LICENSE file in the project root for full license information.
+ 
+ Name: %FileName% 
+ Project: ElasticSharp (https://www.github.com/rajbandi/elasticsharp)
+   
+***********************************************/
+extensions: .aspx .ascx
+<%-- 
+Copyright (c) 2011 rubicon IT GmbH
+--%>
+extensions: .vb
+'Sample license text.
+extensions:  .xml .config .xsd
+<!--
+Sample license text.
+-->

@@ -1,4 +1,13 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿/**********************************************
+
+ Copyright (c) 2017 Raj Bandi
+ Licensed under Apache License 2.0. See LICENSE file in the project root for full license information.
+ 
+ Name: AccountTests.cs 
+ Project: ElasticSharp (https://www.github.com/rajbandi/elasticsharp)
+ 
+***********************************************/
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ElasticSharp.Core.Algos;
 
 namespace ElasticSharp.Core.Tests

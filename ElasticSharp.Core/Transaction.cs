@@ -1,7 +1,17 @@
-﻿using System;
+﻿/**********************************************
+
+ Copyright (c) 2017 Raj Bandi
+ Licensed under Apache License 2.0. See LICENSE file in the project root for full license information.
+ 
+ Name: Transaction.cs 
+ Project: ElasticSharp (https://www.github.com/rajbandi/elasticsharp)
+   
+***********************************************/
+using System;
 using System.IO;
 using System.Runtime.Serialization;
-using ElasticSharp.Core.Appendix;
+
+using ElasticSharp.Core.Attachments;
 using Newtonsoft.Json;
 
 namespace ElasticSharp.Core
@@ -79,17 +89,6 @@ namespace ElasticSharp.Core
         [DataMember(Name = "senderPublicKey")]
         public string SenderPublicKey { get; set; }
 
-        public IAppendix Message { get; set; }
-        public IAppendix EncryptedMessage { get; set; }
-
-        public IAppendix EncryptToSelfMessage { get; set; }
-        public IAppendix PublicKeyAnouncement { get; set; }
-
-        public IAppendix Phasing { get; set; }
-
-        public IAppendix PrunablePlainMessage { get; set; }
-
-        public IAppendix PrunableEncryptedMessage { get; set; }
 
         private int height = Int32.MaxValue;
        
@@ -103,9 +102,10 @@ namespace ElasticSharp.Core
             
         }
       
-        public void FromJson(string json)
+        public static Transaction FromJson(string json)
         {
             var transaction = JsonConvert.DeserializeObject<Transaction>(json);
+            return transaction;
         }
 
         /// <summary>
@@ -271,176 +271,7 @@ namespace ElasticSharp.Core
         {
             return ToBytes(this, signature);
         }
-        /// <summary>
-        /// Gets native type representation of transaction from local transaction type
-        /// </summary>
-        /// <param name="transactionType">Transaction type</param>
-        /// <returns>byte value</returns>
-        public static byte GetTransactionType(TransactionType transactionType)
-        {
-            byte type = 0;
-            switch (transactionType)
-            {
-                case TransactionType.PaymentOrdinary:
-                case TransactionType.PaymentRedeem:
-                    type = Constants.TypePayment;
-                    break;
-                case TransactionType.MessageAccountInfo:
-                case TransactionType.MessageArbitrary:
-                case TransactionType.MessageHubAnouncement:
-                case TransactionType.MessagePhasingVoteCasting:
-                case TransactionType.MessagePollCreation:
-                case TransactionType.MessageVoteCasting:
-                    type = Constants.TypeMessage;
-                    break;
-                case TransactionType.AccountEffectiveBalanceLeasing:
-                case TransactionType.AccountPhasingOnly:
-                    type = Constants.TypeAccountControl;
-                    break;
-                case TransactionType.DataUpload:
-                case TransactionType.DataExtend:
-                    type = Constants.TypeData;
-                    break;
-            }
-
-            return type;
-        }
-
-        /// <summary>
-        /// Returns native subtype of a given transaction from local transaction type
-        /// </summary>
-        /// <param name="transactionType">Transaction type</param>
-        /// <returns>sub type byte</returns>
-        public static byte GetTransactionSubType(TransactionType transactionType)
-        {
-            byte subType = 0;
-            switch (transactionType)
-            {
-                case TransactionType.PaymentOrdinary:
-                    subType = Constants.SubTypePaymentOrdinary;
-                    break;
-                case TransactionType.PaymentRedeem:
-                    subType = Constants.SubTypePaymentRedeem;
-                    break;
-
-                case TransactionType.MessageArbitrary:
-                    subType = Constants.SubTypeMessageArbitrary;
-                    break;
-
-                case TransactionType.MessagePollCreation:
-                    subType = Constants.SubTypeMessagePollCreation;
-                    break;
-
-                case TransactionType.MessageVoteCasting:
-                    subType = Constants.SubTypeMessageVoteCasting;
-                    break;
-
-                case TransactionType.MessageHubAnouncement:
-                    subType = Constants.SubTypeMessageHubAnouncement;
-                    break;
-
-                case TransactionType.MessageAccountInfo:
-                    subType = Constants.SubTypeMessageAccountInfo;
-                    break;
-
-                case TransactionType.MessagePhasingVoteCasting:
-                    subType = Constants.SubTypeMessagePhasingVoteCasting;
-                    break;
-
-                case TransactionType.AccountEffectiveBalanceLeasing:
-                    subType = Constants.SubTypeAccountControlBalanceLeasing;
-                    break;
-
-                case TransactionType.AccountPhasingOnly:
-                    subType = Constants.SubTypeAccountControlPhasing;
-                    break;
-
-                case TransactionType.DataUpload:
-                    subType = Constants.SubTypeDataUpload;
-                    break;
-
-                case TransactionType.DataExtend:
-                    subType = Constants.SubTypeDataExtend;
-                    break;
-            }
-
-            return subType;
-        }
-
-        /// <summary>
-        /// Get transaction type from native type and subtype
-        /// </summary>
-        /// <param name="type">Native type</param>
-        /// <param name="subType">Native subtype</param>
-        /// <returns>Transaction type</returns>
-        public static TransactionType GetTransactionType(byte type, byte subType)
-        {
-            var transactionSubType = TransactionType.PaymentOrdinary;
-                if (type == Constants.TypePayment)
-                {
-                    if (subType == Constants.SubTypePaymentOrdinary)
-                    {
-                        transactionSubType = TransactionType.PaymentOrdinary;
-                    }
-                    else if (subType == Constants.SubTypePaymentRedeem)
-                    {
-                        transactionSubType = TransactionType.PaymentRedeem;
-                    }
-                }
-                else if (type == Constants.TypeMessage)
-                {
-                    if (subType == Constants.SubTypeMessageArbitrary)
-                    {
-                        transactionSubType = TransactionType.MessageArbitrary;
-                    }
-                    else if (subType == Constants.SubTypeMessagePollCreation)
-                    {
-                        transactionSubType = TransactionType.MessagePollCreation;
-                    }
-                    else if (subType == Constants.SubTypeMessageVoteCasting)
-                    {
-                        transactionSubType = TransactionType.MessageVoteCasting;
-                    }
-                    else if (subType == Constants.SubTypeMessageHubAnouncement)
-                    {
-                        transactionSubType = TransactionType.MessageHubAnouncement;
-                    }
-                    else if (subType == Constants.SubTypeMessageAccountInfo)
-                    {
-                        transactionSubType = TransactionType.MessageAccountInfo;
-                    }
-                    else if (subType == Constants.SubTypeMessagePhasingVoteCasting)
-                    {
-                        transactionSubType = TransactionType.MessagePhasingVoteCasting;
-                    }
-
-                }
-                else if (type == Constants.TypeAccountControl)
-                {
-                    if (subType == Constants.SubTypeAccountControlBalanceLeasing)
-                    {
-                        transactionSubType = TransactionType.AccountEffectiveBalanceLeasing;
-                    }
-                    else if (subType == Constants.SubTypeAccountControlPhasing)
-                    {
-                        transactionSubType = TransactionType.AccountPhasingOnly;
-                    }
-                }
-                else if (type == Constants.TypeData)
-                {
-                    if (subType == Constants.SubTypeDataUpload)
-                    {
-                        transactionSubType = TransactionType.DataUpload;
-                    }
-                    else if (subType == Constants.SubTypeDataExtend)
-                    {
-                        transactionSubType = TransactionType.DataExtend;
-                    }
-                }
-
-                return transactionSubType;
-        }
-
+      
 
         /// <summary>
         /// Get transaction flags

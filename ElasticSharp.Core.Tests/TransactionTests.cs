@@ -1,6 +1,18 @@
-﻿
+﻿/**********************************************
+
+ Copyright (c) 2017 Raj Bandi
+ Licensed under Apache License 2.0. See LICENSE file in the project root for full license information.
+ 
+ Name: TransactionTests.cs 
+ Project: ElasticSharp (https://www.github.com/rajbandi/elasticsharp)
+ 
+***********************************************/
+
+using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ElasticSharp.Core;
+using ElasticSharp.Core.Attachments;
+using Newtonsoft.Json.Linq;
 
 
 namespace ElasticSharp.Core.Tests
@@ -76,7 +88,7 @@ namespace ElasticSharp.Core.Tests
         }
 
         /// <summary>
-        /// Test transaction signature against a block chain signed transaction signature. 
+        /// Test to verify a generated transaction signature against a block chain signed transaction signature. 
         /// </summary>
         [TestMethod]
         public void TestTransactionSignature()
@@ -119,6 +131,32 @@ namespace ElasticSharp.Core.Tests
             var hex2 = transaction2.Signature;
 
             Assert.AreEqual(hex1, hex2);
+        }
+
+        [TestMethod]
+        public void TestAttachmentsJson()
+        {
+            var prunableMessage = new PrunablePlainMessageAttachment {Message = "Hello this is a message"};
+
+            var encryptedMessage = new EncryptedMessageAttachment
+            {
+                Data = new MessageData
+                {
+                    Data = "dsdasdsa",
+                    IsText = false,
+                    IsCompressed = true
+                }
+            };
+
+            var json = Attachment.ToJson(new IAttachment[] {prunableMessage, encryptedMessage});
+            Debug.WriteLine(json);
+            var obj = JObject.Parse(json);
+
+            Assert.IsNotNull(obj["version.PrunablePlainMessage"]);
+            Assert.IsNotNull(obj["version.EncryptedMessage"]);
+
+            Assert.IsNotNull(obj["encryptedMessage"]);
+
         }
 
     }
